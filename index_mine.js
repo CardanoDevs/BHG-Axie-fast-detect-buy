@@ -1,7 +1,7 @@
 const Web3 = require('web3');
 const { ethers } = require('ethers');
 const {GraphQLClient} = require('graphql-request');
-let buyPrice = 30500000000000000;
+let buyPrice = 47000000000000000;
 let roninweb3           = new Web3(new Web3.providers.HttpProvider("https://proxy.roninchain.com/free-gas-rpc"));
 let abi                 = [{"constant": false,"inputs": [{"internalType": "address","name": "_seller","type": "address"}, {"internalType": "contract IERC20","name": "_token","type": "address"}, {"internalType": "uint256","name": "_bidAmount","type": "uint256"}, {"internalType": "uint256","name": "_listingIndex","type": "uint256"}, {"internalType": "uint256","name": "_listingState","type": "uint256"}],"name": "settleAuction","outputs": [],"payable": false,"stateMutability": "nonpayable","type": "function"}]
 let marketAddress       = '0x213073989821f738A7BA3520C3D31a1F9aD31bBd';
@@ -17,7 +17,7 @@ let marketContract      = new roninweb3.eth.Contract(abi, marketAddress);
           let response = []
           let variable = {
             "from": 0,
-            "size": 4,
+            "size": 2,
             "sort": "PriceAsc",
             "auctionType": "Sale",
             "criteria": {}
@@ -29,17 +29,13 @@ let marketContract      = new roninweb3.eth.Contract(abi, marketAddress);
               response = data['axies']['results']['0']
             } else if ( data['axies']['results']['1']['auction']['timeLeft'] > 60 ) {
               response = data['axies']['results']['1']
-            } else if ( data['axies']['results']['2']['auction']['timeLeft'] > 60 ) {
-              response = data['axies']['results']['2']
-            } else if ( data['axies']['results']['3']['auction']['timeLeft'] > 60) {
-              response = data['axies']['results']['3']
             } 
                console.log(response)
           })
           var result = response
         if (parseInt(result.auction.suggestedPrice) < buyPrice) {
             var ownerAddress = roninweb3.utils.toChecksumAddress(result.owner);
-            var price = ethers.BigNumber.from(result.auction.suggestedPrice);
+            var price = ethers.BigNumber.from((parseInt(result.auction.suggestedPrice)+500000000000000) + '');
             var listIndex = ethers.BigNumber.from(result.auction.listingIndex);
             var listState = ethers.BigNumber.from(result.auction.state);
             console.log("1111")
