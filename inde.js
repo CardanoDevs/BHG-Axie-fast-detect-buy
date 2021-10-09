@@ -49,37 +49,40 @@ let marketContract      = new web3.eth.Contract(marketAbi, marketAddress);
                     let data
                       data = await client.request(graphqlquery, variables)
                       console.log(data)
-                      console.log(data.axie.battleInfo.banned)
-
-                    if(data.axie.auction !== null){
+                      if(data.axie.battleInfo.banned == true){
+                        flag = false
+                      } 
+                        else {
+                        if(data.axie.auction !== null){
                       
-                      if (parseInt(data.axie.auction.suggestedPrice)<price && data.axie.battleInfo.banned == false) {
-                        var ownerAddress = web3.utils.toChecksumAddress(data.axie.auction.seller);
-                        var buyprice = ethers.BigNumber.from((parseInt(data.axie.auction.suggestedPrice)+ 1000000000000000) + '');
-                        var listIndex = ethers.BigNumber.from(data.axie.auction.listingIndex);
-                        var listState = ethers.BigNumber.from(data.axie.auction.state);
-                        
-                        let tx = {
-                            from          : walletAddress,
-                            to            : marketAddress,
-                            data          : marketContract.methods.settleAuction(ownerAddress, wethAddress, buyprice, listIndex, listState).encodeABI(),
-                            gasPrice      : '0',
-                            nonce         : await roninweb3.eth.getTransactionCount(walletAddress),
-                            gas           : '1000000'
+                          if (parseInt(data.axie.auction.suggestedPrice)<price) {
+                            var ownerAddress = web3.utils.toChecksumAddress(data.axie.auction.seller);
+                            var buyprice = ethers.BigNumber.from((parseInt(data.axie.auction.suggestedPrice)+ 1000000000000000) + '');
+                            var listIndex = ethers.BigNumber.from(data.axie.auction.listingIndex);
+                            var listState = ethers.BigNumber.from(data.axie.auction.state);
+                            
+                            let tx = {
+                                from          : walletAddress,
+                                to            : marketAddress,
+                                data          : marketContract.methods.settleAuction(ownerAddress, wethAddress, buyprice, listIndex, listState).encodeABI(),
+                                gasPrice      : '0',
+                                nonce         : await roninweb3.eth.getTransactionCount(walletAddress),
+                                gas           : '1000000'
+                              }
+      
+                             console.log(tx)
+                             console.log("before send")
+                             var promise = await web3.eth.accounts.signTransaction(tx, walletPrivateKey)
+                             await web3.eth.sendSignedTransaction(promise.rawTransaction).once('confirmation', () => {
+                               console.log("ok")
+                            }) .once('error', (e) => {
+                              console.log(e)
+                            })
+                          } else {
+                            break
                           }
-  
-                         console.log(tx)
-                         console.log("before send")
-                         var promise = await web3.eth.accounts.signTransaction(tx, walletPrivateKey)
-                         await web3.eth.sendSignedTransaction(promise.rawTransaction).once('confirmation', () => {
-                           console.log("ok")
-                        }) .once('error', (e) => {
-                          console.log(e)
-                        })
-                      } else {
-                        break
+                        }
                       }
-                    }
                   }
               }
             }
