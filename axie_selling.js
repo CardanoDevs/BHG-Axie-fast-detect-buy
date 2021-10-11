@@ -11,87 +11,61 @@ let marketAddress       = '0x213073989821f738A7BA3520C3D31a1F9aD31bBd';
 let wethAddress         = '0xc99a6A985eD2Cac1ef41640596C5A5f9F4E19Ef5';
 let walletAddress       = '0x76bD076f18b926407ce1473BBa4c77C047B10FC8';
 let walletPrivateKey    = "0x086c236291f8053647cf69cdf5fa01a334c2967454d19b1599334a7e58c1dfa5";
+
 let marketContract      = new web3.eth.Contract(marketAbi, marketAddress);
-let threadNumber = 20;
 
-const scan = async (index) => {
-  while(true){
+
+
+const run = async () => {
+   
     try{
-      var blocknumber = await roninweb3.eth.getBlockNumber();
-      console.log("serching in Block : ", blocknumber)
-      var block = await roninweb3.eth.getBlock(blocknumber)
-      for (let i = index; i < block.transactions.length; i+=threadNumber) {
-        console.log(i+1, "th transaction checking")
-        var transaction = await roninweb3.eth.getTransactionFromBlock(blocknumber, i)
-        if (transaction.to === "0x213073989821f738A7BA3520C3D31a1F9aD31bBd" ){
-          abiDecoder.addABI(marketAbi);
-          var decodedData = abiDecoder.decodeMethod(transaction.input);
-          
-          if (decodedData.name === "createAuction"){
-            console.log(decodedData['params']['3']['value']/1000000000000000000, decodedData['params']['4']['value']/1000000000000000000)
-            if ((parseInt(decodedData['params']['3']['value']) < price )){
-              console.log("auction is created! \n", decodedData)
-              var id = decodedData['params']['2']['value']
-              var startingPrice = decodedData['params']['3']['value']
-                console.log("id is", id, "price is ",startingPrice)
-                var variables = {
-                  "axieId": parseInt(id)
-                }
-                const client = new GraphQLClient('https://graphql-gateway.axieinfinity.com/graphql', { headers: {} })
-                let graphqlquery = "query GetAxieDetail($axieId: ID!) {\n  axie(axieId: $axieId) {\n    ...AxieDetail\n    __typename\n  }\n}\n\n fragment AxieBattleInfo on AxieBattleInfo {\n  banned\n }\n fragment AxieDetail on Axie {\n  id\n \n  battleInfo {\n    ...AxieBattleInfo\n    __typename\n  } auction {\n    ...AxieAuction\n    __typename\n  }\n}\n\nfragment AxieAuction on Auction {\n  timeLeft\n  suggestedPrice\n  seller\n  listingIndex\n  state\n}\n"
-                let flag = true
-                while (flag){
-                  let data
-                    data = await client.request(graphqlquery, variables)
-                    console.log(data)
-                    if(data.axie.battleInfo.banned == true){
-                      flag = false
-                    } 
-                      else {
-                      if(data.axie.auction !== null){
-                    
-                        if (parseInt(data.axie.auction.suggestedPrice)<price) {
-                          var ownerAddress = web3.utils.toChecksumAddress(data.axie.auction.seller);
-                          var buyprice = ethers.BigNumber.from((parseInt(data.axie.auction.suggestedPrice)+ 1000000000000000) + '');
-                          var listIndex = ethers.BigNumber.from(data.axie.auction.listingIndex);
-                          var listState = ethers.BigNumber.from(data.axie.auction.state);
-                          
-                          let tx = {
-                              from          : walletAddress,
-                              to            : marketAddress,
-                              data          : marketContract.methods.settleAuction(ownerAddress, wethAddress, buyprice, listIndex, listState).encodeABI(),
-                              gasPrice      : '0',
-                              nonce         : await roninweb3.eth.getTransactionCount(walletAddress),
-                              gas           : '1000000'
-                            }
-    
-                           console.log(tx)
-                           console.log("before send")
-                           var promise = await web3.eth.accounts.signTransaction(tx, walletPrivateKey)
-                           await web3.eth.sendSignedTransaction(promise.rawTransaction).once('confirmation', () => {
-                             console.log("ok")
-                          }) .once('error', (e) => {
-                            console.log(e)
-                          })
-                        } else {
-                          break
-                        }
-                      }
-                    }
-                }
+
+      let id = []
+      let price = []
+      let timeduration = []
+      let type = []
+      let changetoken= []
+      let wethtoken = []
+
+     
+            var i = ethers.BigNumber.from('6023037')
+ 
+            var pric = ethers.BigNumber.from('30000000000000000')
+           
+            var timeduratio = ethers.BigNumber.from('86400')
+            
+            var typ = ethers.BigNumber.from('1')
+            
+            
+            id.push(i)
+            price.push(pric)
+            timeduration.push(timeduratio)
+            type.push(typ)
+            console.log(type)
+            console.log(timeduration)
+            console.log(price)
+            console.log(id)
+            let tx = {
+              from          : walletAddress,
+              to            : marketAddress,
+              data          : marketContract.methods.createAuction(type,['0x32950db2a7164aE833121501C797D79E7B79d74C'], id ,price, price, ['0xc99a6A985eD2Cac1ef41640596C5A5f9F4E19Ef5'], timeduration).encodeABI(),
+              gasPrice      : '0',
+              nonce         : await roninweb3.eth.getTransactionCount(walletAddress),
+              gas           : '1000000'
             }
-          }
-        }
-      } 
-    }catch(err){
-  }
-}
+            console.log(tx)
+            console.log("before send")
+            var promise = await web3.eth.accounts.signTransaction(tx, walletPrivateKey)
+            await web3.eth.sendSignedTransaction(promise.rawTransaction).once('confirmation', () => {
+              console.log("ok")
+            }).once('error', (e) => {
+            console.log(e)
+            })
+      }catch(err){
+        console.log(err)
+    }
 }
 
+run()
 
-const run =() => {
-for (let i = 0; i < threadNumber; i++) {
-  scan(i)
-}
-}
-run();
+
