@@ -4,14 +4,14 @@
 The software developed in this repository will work as a bot to detect cheap axie and buy it.
 ## Step 1 Get Detail data from Ronin Block chain 
 
-        First step is detect Create Auction transaction in Ronin Blockchain.
+- First step is detect Create Auction transaction in Ronin Blockchain.
 
-        Get last block from ronin and filter transactions that desctination address is market place address
+- Get last block from ronin and filter transactions that desctination address is market place address
 
-        Next decode transactions with market abi and catch createAuction function, to get price data.
+- Next decode transactions with market abi and catch createAuction function, to get price data.
 ## Step 2 Get data from GraphQL
         
-        If axie is a reasonable with limit price, send request to axie api to get some data to buy.
+If axie is a reasonable with limit price, send request to axie api to get some data to buy.
 
         var endpoint = 'https://graphql-gateway.axieinfinity.com/graphql'
 
