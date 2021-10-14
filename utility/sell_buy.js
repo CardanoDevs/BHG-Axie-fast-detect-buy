@@ -24,10 +24,8 @@ const run = async () => {
       let price = []
       let timeduration = []
       let type = []
-
-
-            var i = ethers.BigNumber.from('5577859')
-            var pric = ethers.BigNumber.from('9000000000000000')
+            var i = ethers.BigNumber.from('6023037')
+            var pric = ethers.BigNumber.from('11000000000000000')
 
             var timeduratio = ethers.BigNumber.from('86400')
             var typ = ethers.BigNumber.from('1')
@@ -62,43 +60,6 @@ const run = async () => {
 
 
 
-
-
-const cancel = async () => {
-  try{
-    let id = []
-    let price = []
-    let timeduration = []
-    let type = []
-    let changetoken= []
-    let wethtoken = []
-          var i = ethers.BigNumber.from('5577859')
-
-
-          let tx = {
-            from          : walletAddress,
-            to            : marketAddress,
-            data          : marketContract.methods.cancelAuction(i).encodeABI(),
-            gasPrice      : '0',
-            nonce         : await roninweb3.eth.getTransactionCount(walletAddress),
-            gas           : '1000000'
-          }
-          console.log(tx)
-          console.log("before send")
-          var promise = await web3.eth.accounts.signTransaction(tx, walletPrivateKey)
-          await web3.eth.sendSignedTransaction(promise.rawTransaction).once('confirmation', () => {
-            console.log("ok")
-          }).once('error', (e) => {
-          console.log(e)
-          })
-    }catch(err){
-      console.log(err)
-  }
-}
-
-
-
-
 const getdata = async () => {
   
 let tokenid = ethers.BigNumber.from('5577859')
@@ -107,6 +68,6 @@ console.log(tokenstate)
 
 }
 
-getdata()
+run()
 
 
