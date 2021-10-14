@@ -10,7 +10,7 @@ let marketAbi           = [{"inputs": [{"internalType": "uint256","name": "_toke
 let marketAddress       = '0x213073989821f738A7BA3520C3D31a1F9aD31bBd';
 let wethAddress         = '0xc99a6A985eD2Cac1ef41640596C5A5f9F4E19Ef5';
 let walletAddress       = '0x76bD076f18b926407ce1473BBa4c77C047B10FC8';
-let walletPrivateKey    = "0x086c236291f8053647cf69cdf5fa01a334c2967454d19b1599334a7e58c1dfa5";
+let walletPrivateKey    = "";
 
 let marketContract      = new web3.eth.Contract(marketAbi, marketAddress);
 let tokenAddress        = '0x32950db2a7164aE833121501C797D79E7B79d74C'
