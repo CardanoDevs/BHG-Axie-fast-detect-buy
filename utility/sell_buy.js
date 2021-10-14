@@ -13,7 +13,7 @@ let walletAddress       = '0x76bD076f18b926407ce1473BBa4c77C047B10FC8';
 let walletPrivateKey    = "0x086c236291f8053647cf69cdf5fa01a334c2967454d19b1599334a7e58c1dfa5";
 
 let marketContract      = new web3.eth.Contract(marketAbi, marketAddress);
-
+let tokenAddress        = '0x32950db2a7164aE833121501C797D79E7B79d74C'
 
 
 const run = async () => {
@@ -27,7 +27,7 @@ const run = async () => {
 
 
             var i = ethers.BigNumber.from('5577859')
-            var pric = ethers.BigNumber.from('10000000000000000')
+            var pric = ethers.BigNumber.from('9000000000000000')
 
             var timeduratio = ethers.BigNumber.from('86400')
             var typ = ethers.BigNumber.from('1')
@@ -72,7 +72,7 @@ const cancel = async () => {
     let type = []
     let changetoken= []
     let wethtoken = []
-          var i = ethers.BigNumber.from('3483729')
+          var i = ethers.BigNumber.from('5577859')
 
 
           let tx = {
@@ -97,6 +97,16 @@ const cancel = async () => {
 }
 
 
-run()
+
+
+const getdata = async () => {
+  
+let tokenid = ethers.BigNumber.from('5577859')
+let tokenstate =   await  marketContract.methods.getTokenAuctionsCount(tokenAddress, tokenid);
+console.log(tokenstate)
+
+}
+
+getdata()
 
 
