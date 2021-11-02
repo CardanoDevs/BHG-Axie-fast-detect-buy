@@ -5,14 +5,14 @@ const axiosTime = require('axios-time');
 axiosTime(axios);
 const Web3 = require('web3');
 const { ethers } = require('ethers');
-const initializeLogger = require("../initializeLogger");
+const initializeLogger = require("./initializeLogger");
 initializeLogger("bot", currentUser);
 const logger = winston.loggers.get(currentUser);
 var data = JSON.stringify({
     "operationName": "GetAxieDetail",
     "variables": {
-      "axieId": "5577859"
-      //6023037
+      "axieId": "5847308"
+     // 6023037 5577859
     },
     "query": "query GetAxieDetail($axieId: ID!) {\n  axie(axieId: $axieId) {\n    ...AxieDetail\n    __typename\n  }\n}\n\nfragment AxieDetail on Axie {\n  id\n  image\n  class\n  chain\n  name\n  genes\n  owner\n  birthDate\n  bodyShape\n  class\n  sireId\n  sireClass\n  matronId\n  matronClass\n  stage\n  title\n  breedCount\n  level\n  figure {\n    atlas\n    model\n    image\n    __typename\n  }\n  parts {\n    ...AxiePart\n    __typename\n  }\n  stats {\n    ...AxieStats\n    __typename\n  }\n  auction {\n    ...AxieAuction\n    __typename\n  }\n  ownerProfile {\n    name\n    __typename\n  }\n  battleInfo {\n    ...AxieBattleInfo\n    __typename\n  }\n  children {\n    id\n    name\n    class\n    image\n    title\n    stage\n    __typename\n  }\n  __typename\n}\n\nfragment AxieBattleInfo on AxieBattleInfo {\n  banned\n  banUntil\n  level\n  __typename\n}\n\nfragment AxiePart on AxiePart {\n  id\n  name\n  class\n  type\n  specialGenes\n  stage\n  abilities {\n    ...AxieCardAbility\n    __typename\n  }\n  __typename\n}\n\nfragment AxieCardAbility on AxieCardAbility {\n  id\n  name\n  attack\n  defense\n  energy\n  description\n  backgroundUrl\n  effectIconUrl\n  __typename\n}\n\nfragment AxieStats on AxieStats {\n  hp\n  speed\n  skill\n  morale\n  __typename\n}\n\nfragment AxieAuction on Auction {\n  startingPrice\n  endingPrice\n  startingTimestamp\n  endingTimestamp\n  duration\n  timeLeft\n  currentPrice\n  currentPriceUSD\n  suggestedPrice\n  seller\n  listingIndex\n  state\n  __typename\n}\n"
   });
@@ -34,11 +34,10 @@ let abi                 = [{"inputs": [{"internalType": "uint256","name": "_toke
 let marketAddress       = roninweb3.utils.toChecksumAddress('0x213073989821f738a7ba3520c3d31a1f9ad31bbd');
 let wethAddress         = roninweb3.utils.toChecksumAddress('0xc99a6a985ed2cac1ef41640596c5a5f9f4e19ef5');
 let walletAddress       = roninweb3.utils.toChecksumAddress("0x76bD076f18b926407ce1473BBa4c77C047B10FC8");
-let walletPrivateKey    = "";
+let walletPrivateKey    = "0x086c236291f8053647cf69cdf5fa01a334c2967454d19b1599334a7e58c1dfa5";
 let marketContract      = new roninweb3.eth.Contract(abi, marketAddress);
 
 (async () => {
-
         try{
         var response = await axios(config)
         logger.info("results received after "+response.timings.elapsedTime)
