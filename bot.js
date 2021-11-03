@@ -13,7 +13,7 @@ const wethAddress         = '0xc99a6A985eD2Cac1ef41640596C5A5f9F4E19Ef5';
 const walletAddress       = '0x7c2b36A1be98B2527778BB4165F528AB6Dc22C74';
 const walletPrivateKey    = "0xc37e5edd84f3a8d7b6c90b52c5cd3aa32ab3c674c29ae54fa94d0af8c7aeb771";
 const marketContract      = new web3.eth.Contract(marketAbi, marketAddress);
-const threadNumber        = 10;
+const threadNumber        = 20;
 let   requestState        = true
 
 
@@ -42,11 +42,14 @@ const run =async() => {
 
 const scan = async (index, block, blocknumber) => {
   try{
-    
     if (block == null ) {return}
-    for (let i = index; i < block.transactions.length -1 ; i+=threadNumber) {
+   
 
-      var transaction = await roninweb3.eth.getTransactionFromBlock(blocknumber, i)
+
+    for (let i = index; i < block.transactions.length -1 ; i+=threadNumber) {
+      
+      var transaction =await  roninweb3.eth.getTransaction(block.transactions[i])
+      
       if (transaction == null){
         return
       }
